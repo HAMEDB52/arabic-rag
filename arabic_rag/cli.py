@@ -12,7 +12,7 @@ from .pipeline import RAGPipeline
 def build(docs: str, top_k: int) -> RAGPipeline:
     pipeline = RAGPipeline(top_k=top_k)
     n = pipeline.add_directory(docs)
-    print(f"تم استيعاب {n} مستنداً في {len(pipeline.index)} مقطعاً.", file=sys.stderr)
+    print(f"الفهرس جاهز — المستندات: {n} · المقاطع: {len(pipeline.index)}", file=sys.stderr)
     return pipeline
 
 
@@ -40,7 +40,7 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(answer.to_dict(), ensure_ascii=False, indent=2))
         else:
             print("\nالإجابة:\n" + answer.text + "\n")
-            print("المصادر:")
+            print("المصادر:" if answer.citations else "المصادر: — (امتناع: لا يوجد دليل كافٍ)")
             for c in answer.citations:
                 print(f"  {c.marker} {c.doc_id} (موضع {c.start}-{c.end})")
         return 0

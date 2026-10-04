@@ -66,7 +66,9 @@ class ExtractiveGenerator:
         max_sentences: int = 3,
         idf: dict[str, float] | None = None,
         min_overlap: float = 0.08,
+        keep_ratio: float = 0.6,
     ) -> None:
+        self.keep_ratio = keep_ratio
         self.max_sentences = max_sentences
         # عتبة الامتناع: دون هذا التداخل تُعتبر المستندات غير ذات صلة
         self.min_overlap = min_overlap
@@ -105,9 +107,16 @@ class ExtractiveGenerator:
 
         scored.sort(key=lambda x: (-x[0], x[1]))
         # الامتناع خير من الهلوسة: بلا تداخل معجمي كافٍ لا تُبنى إجابة
-        if not scored or max(s[6] for s in scored) < self.min_overlap:
+        # ويُشترط تطابق كلمة مضمون واحدة على الأقل؛ كلمات الوحدات وحدها («اليوم») لا تكفي
+        content_hit = any(
+            (q_terms & set(stems(s[2]))) - UNIT_TERMS for s in scored
+        )
+        if not scored or not content_hit or max(s[6] for s in scored) < self.min_overlap:
             return Answer(question, self.NO_ANSWER, [], contexts)
-        picked = [s for s in scored if s[0] > 0][: self.max_sentences] or scored[:1]
+        # انتقاء نسبي: تُستبعد الجمل الأضعف بوضوح من أفضل جملة حتى لا تُحشى الإجابة
+        best = scored[0][0]
+        picked = [s for s in scored if s[0] > 0 and s[0] >= self.keep_ratio * best]
+        picked = picked[: self.max_sentences] or scored[:1]
 
         parts, citations, seen, used_sents = [], [], {}, set()
         for _, _, sent, chunk, abs_start, abs_end, _ in picked:
