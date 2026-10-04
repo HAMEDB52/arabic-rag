@@ -2,7 +2,7 @@
 
 نظام RAG مبني خصيصاً للنص العربي: **كل جملة في الإجابة مرتبطة بموضعها الدقيق في المستند المصدر**، والنظام يمتنع عن الإجابة حين لا تدعمه المستندات.
 
-[![tests](https://img.shields.io/badge/tests-16%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-18%20passed-brightgreen)](#الاختبارات)
 [![python](https://img.shields.io/badge/python-3.10%2B-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -32,7 +32,7 @@
 ## التثبيت
 
 ```bash
-git clone https://github.com/<اسم-المستخدم>/arabic-rag.git
+git clone https://github.com/HAMEDB52/arabic-rag.git
 cd arabic-rag
 pip install -r requirements-dev.txt
 ```
@@ -116,7 +116,7 @@ MRR            : 1.000
 ## الاختبارات
 
 ```bash
-python -m pytest -q      # 16 اختباراً
+python -m pytest -q      # 18 اختباراً
 ```
 
 تغطي: التطبيع والتجذير · صحة مواضع المقاطع · ترتيب الاسترجاع · تأصيل الاستشهادات · الامتناع عن الأسئلة خارج النطاق · واجهة HTTP.
