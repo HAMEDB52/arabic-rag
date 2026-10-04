@@ -49,3 +49,9 @@ def test_out_of_scope_question_is_refused(pipeline):
     answer = pipeline.ask("ما هي عاصمة اليابان؟")
     assert "لا توجد معلومات كافية" in answer.text
     assert answer.citations == []
+
+
+@pytest.mark.parametrize("question", ["ما سعر برميل النفط اليوم؟", "ما هي عقوبة السفر إلى المريخ؟"])
+def test_function_or_unit_words_alone_do_not_produce_an_answer(pipeline, question):
+    # «إلى» و«اليوم» تتطابق معجمياً مع المستندات، لكنها لا تجعل السؤال ضمن النطاق
+    assert pipeline.ask(question).citations == []
